@@ -1,0 +1,7 @@
+{
+  "name": "Place players in a circle",
+  "dimensions": [1000, 1000],
+  "backgroundUrl": "data:image/svg+xml:<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1000\" height=\"1000\" viewBox=\"0 0 1000 1000\"><rect width=\"100%\" height=\"100%\" fill=\"#ffe0ca\" /></svg>",
+  "seatingPath": "M500,100 A400,400 0 0 1 500,900 A400,400 0 0 1 500,100",
+  "newPlayerToken": [500, 500]
+}

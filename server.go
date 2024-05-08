@@ -13,10 +13,11 @@ import (
 )
 
 const (
-	ScriptsContentType = "application/prs.powergrim.scripts+json"
-	GameContentType    = "application/prs.powergrim.game+json"
-	ActionContentType  = "application/prs.powergrim.action+json"
-	ActionsContentType = "application/prs.powergrim.actions+json"
+	ScriptfileContentType = "application/prs.powergrim.scriptfile+json"
+	LayoutContentType     = "application/prs.powergrim.layout+json"
+	GameContentType       = "application/prs.powergrim.game+json"
+	ActionContentType     = "application/prs.powergrim.action+json"
+	ActionsContentType    = "application/prs.powergrim.actions+json"
 )
 
 type VersionedGame struct {
@@ -29,12 +30,15 @@ var gamesMut sync.Mutex
 var games = make(map[string]VersionedGame)
 
 func main() {
-	if err := loadScripts(); err != nil {
+	if err := handleFiles[ScriptFile]("scripts", "script", ScriptfileContentType); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	http.HandleFunc("GET /script/{scriptId}", getScript)
+	if err := handleFiles[Layout]("layouts", "layout", LayoutContentType); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 
 	http.HandleFunc("POST /game", newGame)
 	http.HandleFunc("GET /game/{gameId}", getGame)

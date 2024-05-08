@@ -11,7 +11,6 @@
       "logo": "https://wiki.bloodontheclocktower.com/images/a/a1/Logo_trouble_brewing.png",
       "tagline": "Recommended for players and Storytellers new to Blood on the Clocktower or to social deception games.",
       "description": "Trouble Brewing has a little bit of everything. Some characters passively receive information, some need to take action to learn who is who, while some simply want to bait the Demon into attacking them. Both good and evil can gain the upper hand by making well-timed sacrifices. Trouble Brewing is a relatively straightforward Demon-hunt, but evil has a number of dastardly misinformation tricks up their sleeves, so the good players best question what they think they know if they hope to survive.",
-      "keyCharacters": ["imp"],
       "characters": [
         "washerwoman",
         "librarian",
@@ -45,7 +44,6 @@
       "logo": "https://wiki.bloodontheclocktower.com/images/1/10/Logo_bad_moon_rising.png",
       "tagline": "Recommended for players who are proactive, dedicated to working as a team, and don’t fear dying.",
       "description": "Bad Moon Rising is a death extravaganza. Demons kill multiple times per night, and Minions get in on the action too. Good players can take great risks to gain reliable information, but may accidentally kill their friends in the process. Luckily, there are many options to keep players alive long past their use-by date. If the good team cannot determine which specific Minions and Demons are in play, however, their doom is all but certain.",
-      "keyCharacters": ["lunatic", "mastermind"],
       "characters": [
         "grandmother",
         "sailor",
@@ -82,7 +80,6 @@
       "logo": "https://wiki.bloodontheclocktower.com/images/4/43/Logo_sects_and_violets.png",
       "tagline": "Recommended for players who want to do wild and unexpected things, pushing the limits of what can be achieved in a bluffing game.",
       "description": "Sects & Violets is the craziest of the three editions included in the base set. Good characters get amazing information each and every night. However, the evil team is extremely varied and threatening and can throw massive confusion into the mix. Characters change alignment. Players change characters. Even the evil team can lose track of who is who. This is also the first appearance of madness, which throws all manner of spanners into the works.",
-      "keyCharacters": ["pithag", "vortox"],
       "characters": [
         "clockmaker",
         "dreamer",

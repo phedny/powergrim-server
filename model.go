@@ -79,3 +79,36 @@ type Game struct {
 	Players   []Player   `json:"players"`
 	Reminders []Reminder `json:"reminders"`
 }
+
+type Script struct {
+	Id            string           `json:"id"`
+	Name          string           `json:"name"`
+	Complexity    ScriptComplexity `json:"complexity,omitempty"`
+	Tagline       string           `json:"tagline"`
+	Url           string           `json:"url,omitempty"`
+	Logo          string           `json:"logo,omitempty"`
+	Description   string           `json:"description"`
+	KeyCharacters []string         `json:"keyCharacters,omitempty"`
+	Characters    []string         `json:"characters"`
+}
+
+type ScriptComplexity struct {
+	Level       string  `json:"level,omitempty"`
+	Storyteller float64 `json:"storyteller,omitempty"`
+	Player      float64 `json:"player,omitempty"`
+}
+
+type ScriptFile struct {
+	Name    string   `json:"name"`
+	Author  string   `json:"author,omitempty"`
+	Url     string   `json:"url,omitempty"`
+	Scripts []Script `json:"scripts"`
+}
+
+type Layout struct {
+	Name           string `json:"name"`
+	Dimensions     [2]int `json:"dimensions"`
+	BackgroundUrl  string `json:"backgroundUrl"`
+	SeatingPath    string `json:"seatingPath,omitempty"`
+	NewPlayerToken [2]int `json:"newPlayerToken"`
+}
