@@ -19,7 +19,7 @@ type VersionedFile struct {
 	data         []byte
 }
 
-func handleFiles[T any](dirName, urlPath, contentType string) error {
+func handleFiles[T any](dirName, urlPath, contentType string, fileLoaded func(fileName string, file VersionedFile, decoded T) error) error {
 	entries, err := os.ReadDir(dirName)
 	if err != nil {
 		return fmt.Errorf("failed to read %s directory: %w", dirName, err)
@@ -45,10 +45,18 @@ func handleFiles[T any](dirName, urlPath, contentType string) error {
 			return fmt.Errorf("failed to parse %s/%s file: %w", dirName, entry.Name(), err)
 		}
 		hash := sha256.Sum256(data)
-		files[entry.Name()[:len(entry.Name())-5]] = VersionedFile{
+		fileName := entry.Name()[:len(entry.Name())-5]
+		file := VersionedFile{
 			lastModified: info.ModTime(),
 			hash:         hex.EncodeToString(hash[:]),
 			data:         data,
+		}
+		files[fileName] = file
+		if fileLoaded != nil {
+			err = fileLoaded(fileName, file, decoded)
+			if err != nil {
+				return err
+			}
 		}
 	}
 	http.HandleFunc(fmt.Sprintf("/%s/{id}", urlPath), func(resp http.ResponseWriter, req *http.Request) {
@@ -76,7 +84,9 @@ func handleFiles[T any](dirName, urlPath, contentType string) error {
 			}
 		}
 		header := resp.Header()
-		header.Add("Access-Control-Allow-Origin", "*")
+		if _, hasOrigin := req.Header["Origin"]; hasOrigin {
+			header.Add("Access-Control-Allow-Origin", "*")
+		}
 		header.Add("Content-Type", contentType)
 		header.Add("Last-Modified", file.lastModified.UTC().Format(http.TimeFormat))
 		header.Add("ETag", file.hash)

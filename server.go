@@ -13,11 +13,12 @@ import (
 )
 
 const (
-	ScriptfileContentType = "application/prs.powergrim.scriptfile+json"
-	LayoutContentType     = "application/prs.powergrim.layout+json"
-	GameContentType       = "application/prs.powergrim.game+json"
-	ActionContentType     = "application/prs.powergrim.action+json"
-	ActionsContentType    = "application/prs.powergrim.actions+json"
+	JsonContentType       = "application/json; charset=utf-8"
+	ScriptfileContentType = "application/prs.powergrim.scriptfile+json; charset=utf-8"
+	LayoutContentType     = "application/prs.powergrim.layout+json; charset=utf-0"
+	GameContentType       = "application/prs.powergrim.game+json; charset=utf-8"
+	ActionContentType     = "application/prs.powergrim.action+json; charset=utf-8"
+	ActionsContentType    = "application/prs.powergrim.actions+json; charset=utf-8"
 )
 
 type VersionedGame struct {
@@ -26,16 +27,18 @@ type VersionedGame struct {
 	Game         Game
 }
 
+var scriptIdToScriptFileId = make(map[string]string)
 var gamesMut sync.Mutex
 var games = make(map[string]VersionedGame)
 
 func main() {
-	if err := handleFiles[ScriptFile]("scripts", "script", ScriptfileContentType); err != nil {
+	http.HandleFunc("GET /findScript", findScript)
+	if err := handleFiles[ScriptFile]("scripts", "script", ScriptfileContentType, collectScriptIds); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	if err := handleFiles[Layout]("layouts", "layout", LayoutContentType); err != nil {
+	if err := handleFiles[Layout]("layouts", "layout", LayoutContentType, nil); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
@@ -101,6 +104,9 @@ func getGame(resp http.ResponseWriter, req *http.Request) {
 		}
 	}
 	header := resp.Header()
+	if _, hasOrigin := req.Header["Origin"]; hasOrigin {
+		header.Add("Access-Control-Allow-Origin", "*")
+	}
 	header.Add("Content-Type", GameContentType)
 	header.Add("Last-Modified", game.LastModified.UTC().Format(http.TimeFormat))
 	header.Add("ETag", fmt.Sprintf("W/%d", game.Version))
@@ -178,4 +184,32 @@ func patchGame(resp http.ResponseWriter, req *http.Request) {
 		resp.WriteHeader(http.StatusConflict)
 	}
 	json.NewEncoder(resp).Encode(game.Game)
+}
+
+func collectScriptIds(scriptFileId string, file VersionedFile, scriptFile ScriptFile) error {
+	for _, script := range scriptFile.Scripts {
+		if scriptIdToScriptFileId[script.Id] != "" {
+			return fmt.Errorf("duplicate script id %q", script.Id)
+		}
+		scriptIdToScriptFileId[script.Id] = scriptFileId
+	}
+	return nil
+}
+
+func findScript(resp http.ResponseWriter, req *http.Request) {
+	if !req.URL.Query().Has("q") {
+		http.Error(resp, "", http.StatusBadRequest)
+		return
+	}
+	scriptFileId := scriptIdToScriptFileId[req.URL.Query().Get("q")]
+	header := resp.Header()
+	if _, hasOrigin := req.Header["Origin"]; hasOrigin {
+		header.Add("Access-Control-Allow-Origin", "*")
+	}
+	header.Add("Content-Type", JsonContentType)
+	if scriptFileId == "" {
+		json.NewEncoder(resp).Encode(nil)
+	} else {
+		json.NewEncoder(resp).Encode(scriptFileId)
+	}
 }
